@@ -1,4 +1,4 @@
-# ======================= QUANTUM PLATFORM - CODING STYLE GUIDE =======================
+# QUANTUM PLATFORM - CODING STYLE GUIDE
 
 ## 1. Language + Versions
     - Primary language: Python 3.12+.
@@ -7,9 +7,12 @@
     - Probably future implementation in C++.
 
 ## 2. Formatting
+    - Variables must be named with lowercase letters and '_' between words.
+    - Tab is 4 spaces.
     - Code formatting is enforced by:
         - black (line length: 88).
         - isort (profile: black).
+
 
 ## 3. Imports
     - Absolute imports only.
