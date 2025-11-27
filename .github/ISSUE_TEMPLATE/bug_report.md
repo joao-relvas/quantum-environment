@@ -1,5 +1,5 @@
 ---
-name: "🐞 Bug report"
+name: "Bug report"
 about: Report a reproducible issue in the platform
 labels: [bug]
 ---

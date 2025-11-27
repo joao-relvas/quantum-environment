@@ -1,0 +1,50 @@
+name: Build & Deploy Docs
+
+on:
+  push:
+    branches:
+      - main        # Apenas publica docs quando a main mudar
+
+permissions:
+  contents: write   # Necessário para publicar no GitHub Pages
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ---------------------------
+      # 1. Checkout
+      # ---------------------------
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ---------------------------
+      # 2. Set up Python
+      # ---------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ---------------------------
+      # 3. Install MkDocs + Plugins
+      # ---------------------------
+      - name: Install documentation generator
+        run: |
+          pip install mkdocs mkdocs-material mkdocs-awesome-pages-plugin
+
+      # ---------------------------
+      # 4. Build documentation
+      # ---------------------------
+      - name: Build docs
+        run: mkdocs build --strict
+
+      # ---------------------------
+      # 5. Deploy to GitHub Pages
+      # ---------------------------
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
