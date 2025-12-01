@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantum-platform"
+version = "0.1.0"
+description = "A full-stack ecosystem for quantum compilation, simulation, and AI-assisted quantum research."
+authors = [
+    { name = "Eduardo", email = "contact@example.com" }
+]
+readme = "README.md"
+requires-python = ">=3.12"
+
+# Base dependencies
+dependencies = [
+    "numpy",
+    "scipy",
+    "numba",
+    "sympy",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "isort", "flake8", "mypy"]
+ai = ["torch", "jax", "tensorflow", "scikit-learn"]
+docs = ["mkdocs", "mkdocs-material"]
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.flake8]
+max-line-length = 88
+exclude = ["build", "dist", ".venv"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
