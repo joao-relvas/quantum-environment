@@ -1,11 +1,11 @@
 ---
-name: "Week Objectives"
-about: List this week's objectives.
-labels: [objective]
+name: "Detailed Objectives"
+about: List one of this week's objectives but more detailed.
+labels: [detail]
 ---
 
 ## Description
-A clear description of this week's objectives.
+A clear description of one of this week's objectives.
 
 ## Objectives and Processes
 - [ ]
