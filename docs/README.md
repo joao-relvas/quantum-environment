@@ -520,5 +520,221 @@ Must include:
 - how to define subroutines
 
 
+## 3. Compiler
+### Composition
 
+#### 1. Compiler Frontend
+First "real" compiler layer.
+
+**This is a module that receives the AST from the DSL parser**
+
+It understands:
+- the structure of the AST
+- declarations of qubits
+- gate calls
+- loops, blocks, subroutines
+- parameters (angles, reals, symbolic expressions)
+
+Then, the module:
+- take the AST and normalize it
+- remove syntatic sugar
+- expand short-hand constructs
+- validate the program structure
+- verify that it fits the grammar and semantic rules of your language beyond what the DSL already checked
+
+#### 2. Semantic / Type Analysis Layer
+The compiler must validate deeper compiler-level semantics.
+
+This has a Semantic Analyzer module that:
+- checks qubit usage
+- ensures gate arity is correct
+- validates multi-qubit operations
+- confirms gate exist on the target hardware
+- ensures all references are in scope
+- rejects impossible control structures (like classical branching dependent on quantum values unless supported)
+
+And:
+- annotate the AST with:
+    - qubit resource usage 
+    - parameter domains
+    - known constants
+    - hardware compatibility tags
+
+#### 3. The IR Generator
+Walks the AST and emits the Quantum IR
+
+This part:
+- convert each AST node into IR nodes
+- flatten blocks into IR sequences
+- unroll loops 
+- inline or reference subroutines
+- generate control-flow IR for if/else (if supported) - it will be supported
+- resolve parameter expressions
+- annotate IR with qubit indices and parameter values
+
+#### 4. The IR Optimizer
+Here is where the compiler turns intelligent.
+
+It has a Pass Manager that can run a sequence of optimization passes
+
+The pass should:
+- **Low-level gate Optimizations**
+    - cancel pairs of gates:
+        - X followed by X
+        - H H
+        - Rz(a) Rz(b) -> Rz(a + b)
+    - fuse contiguous rotation gates
+    - collapse indentity operations
+- **Commutation-based optimizations**
+    - reorder gates that commute
+    - push costly multi-qubit gates outward or inward strategically
+    - separate or group gates for better structure 
+
+- **Hardware-aware passes**
+    - reroute multi-qubit gates according to connectivity
+    - insert SWAPs only when necessary
+    - choose best native decomposition depending on hardware profile
+
+- **Higher-level passes**
+    - detect repeated blocks → propose subroutines
+    - detect known patterns (QFT, Grover diffuser, entangler blocks)
+    - rewrite circuits into canonical forms
+
+- **Structural optimizations**
+    - flatten nested blocks
+    - inline small subcircuits
+    - specialize parameterized substructures
+
+#### 5. Hardware-Abstraction Layer (HAL)
+This module:
+
+- Understands the target hardware:
+    - connectivity graph
+    - native gate set
+    - allowed two-qubit operations
+    - error rates
+    - hardware-specific decomposition rules
+
+- And applies:
+    - gate decomposition (e.g., Toffoli → CZ+H+T sequence)
+    - routing algorithms (like SABRE, token swapping, or your own)
+    - noise-aware transformations (optional)
+
+#### 6. The IR → Lower-Level Hardware IR Conversion
+Some compilers use multiple IR layers:
+- High-level IR (with subroutines, abstract gates)
+- Mid-level IR (hardware-aware but still abstract)
+- Low-level IR (pure native gates)
+
+I should choose if it will have multiple layers or not.
+
+But it will be needed a Lowering Pipeline that:
+- expands all high-level constructs
+- resolves all hardware-dependent decisions
+- outputs the final executable circuit
+
+#### 7. Validation & Verification Passes
+Validate LLM.
+
+I need passes for:
+- **Logical validation**
+    - qubit count integrity
+    - no invalid wires
+    - no dangling gate parameters
+
+- **Circuit well-formedness**
+    - consistent time-ordering of gates
+    - no illegal control flows (if quantum control is unsupported)
+    - ensure atomic operations are valid
+
+- **Hardware validity**
+    - all gates must be invocable on the target device
+    - no illegal multi-qubit operations
+
+#### 8. Compiler Stats & Metadata Extraction
+This is essential for:
+- debugging
+- compiler feedback loops
+- LLM-conditioned optimization
+- simulation metrics
+
+This module should compute:
+- **Program metrics**
+    - depth
+    - width (qubit count)
+    - t-gate count
+    - Clifford count
+    - two-qubit gate count
+    - decomposition statistics
+
+- **Hardware metrics**
+    - routing overhead
+    - fidelity estimates
+    - noise susceptibility
+
+#### 9. IR → Token Encoder (For LLM)
+This bridges the compiler to the Research-LLM.
+This module takes the IR and emits:
+- ```GATE_*``` tokens
+- ```Q*``` tokens
+- ```ANGLE_*``` tokens
+- structural tokens (```BLOCK_START```, ```LOOP_START```, etc.)
+- hardware tokens
+- task tokens
+
+#### 10. Pretty-Printing / Inverse Lowering
+This module:
+- takes IR
+- reconstructs a readable DSL program
+- optionally reconstructs high-level ideas (visualization)
+
+#### 11. Compiler Service API (External Interface)
+The compiler is a layer, not a binary.
+
+This should expose functions like:
+
+- **High-level interfaces**
+    - compile_program_from_dsl(source_code, hardware_profile)
+    - compile_from_ast(ast, hardware_profile)
+
+- **Internal interfaces**
+    - lower_ir(ast)
+    - optimize_ir(ir, passes)
+    - apply_hardware_lowering(ir, hardware)
+
+- **Export interfaces**
+    - export_ir()
+    - export_token_sequence()
+    - export_compiler_stats()
+
+#### 12. Integration with Research LLM
+The compiler isn't just a compiler — it's part of the algorithm discovery loop.
+
+This is a class that:
+- receives LLM-generated actions/edits
+- applies them to IR
+- revalidates IR
+- re-optimizes
+- sends metrics to the simulator
+- forwards results back to the RL learner
+
+This allows:
+- search-based exploration
+- RL-guided optimization
+- iterative circuit improvement
+
+#### 13. Compiler Diagnostics & Tracing
+Optional tools to:
+- record each optimization pass
+- show before/after circuits
+- track transformation sequences
+- provide debugging info for research
+
+#### 14. Formal Compiler Documentation
+The compiler needs reference documentation:
+- IR specification
+- optimization pass descriptions
+- hardware lowering rules
+- naming conventions
+- example transformation pipelines
 
