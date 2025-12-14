@@ -7,57 +7,57 @@ import math
 # ==== VECTOR OPERATIONS ====
 
 # Vector Module
-def get_norm(vector):
+def get_norm(vector: np.array):
     return np.linalg.norm(vector, ord=None)
 
 # Vector Normalization
-def normalize_vector(vector):
+def normalize_vector(vector: np.array):
     vec_norm = get_norm(vector)
     if vec_norm != 0:
         return vector/vec_norm
     return np.zeros_like(vector)
 
 # Inner Product
-def inner_product(vec_a, vec_b):
+def inner_product(vec_a: np.array, vec_b: np.array):
     return np.vdot(vec_a, vec_b)
 
 # Outer Product
-def outer_product(vec_a, vec_b):
+def outer_product(vec_a: np.array, vec_b: np.array):
     return np.outer(vec_a, vec_b)
 
 # Complex Conjugation
-def complex_conj(vec):
+def complex_conj(vec: np.array):
     return np.conjugate(vec, None)
 
 # ==== MATRIX OPERATIONS ====
 
 # Identity Matrix Generator
-def identity(n):
+def identity(n: int):
     return np.identity(n)
 
 # Tensor / Kronecker Product
-def kron_product(A, B):
+def kron_product(A: np.array, B: np.array):
     return np.kron(A, B)
 
 def kron_all(factors):
     return reduce(kron_product, factors)
 
 # Matrix Transpose
-def transpose_matrix(matrix):
+def transpose_matrix(matrix: np.array):
     return np.transpose(matrix, None)
 
 # Conjugate Transpose
-def conj_transpose(matrix):
+def conj_transpose(matrix: np.array):
     return np.conjugate(matrix).T
 
 # Matrix exponentiation
-def matrix_exp(matrix):
+def matrix_exp(matrix: np.array):
     return spla.expm(matrix)
 
 # ==== MATRIX VERIFICATIONS ====
 
 # Unitarity verification
-def is_unitary(matrix, atol=1e-12):
+def is_unitary(matrix: np.array, atol=1e-12):
     if matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1]:
         return False
     I = identity(matrix.shape[0])
@@ -65,13 +65,13 @@ def is_unitary(matrix, atol=1e-12):
     return np.allclose(product, I, atol=atol)
 
 # Hermitian verification
-def is_hermitian(matrix, atol=1e-12):
+def is_hermitian(matrix: np.array, atol=1e-12):
     if matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1]:
         return False
     return np.allclose(matrix, conj_transpose(matrix), atol=atol)
 
 # Positive semi-definite verification
-def is_positive_semi(matrix, atol=1e-12):
+def is_positive_semi(matrix: np.array, atol=1e-12):
     if not is_hermitian(matrix):
         return False
     eigenvalues = np.linalg.eigvalsh(matrix)
@@ -80,21 +80,21 @@ def is_positive_semi(matrix, atol=1e-12):
 # ==== PROBABILITIES AND STATE EVOLUTION UTILITIES ====
 
 # State probabilities
-def state_probs(state_vec):
+def state_probs(state_vec: np.array):
     A = np.asarray(state_vec, dtype=complex).ravel()
     return (np.abs(A) ** 2).tolist()
 
 # State value
-def calc_state(state_vec):
+def calc_state(state_vec: np.array):
     return max(state_probs(state_vec))
 
 # Apply gate to state vector
-def apply_gate(gate, vec):
+def apply_gate(gate: np.array, vec: np.array):
     A = np.asarray(vec, dtype=complex).ravel()
     return (gate @ A).reshape(-1, 1) # Returns the vector in a Column form
 
 # Apply multi-qubit gate to multi-qubit system
-def build_adj_operator(n_qubits, gate, k_adj_targets):
+def build_adj_operator(n_qubits: int, gate: np.array, k_adj_targets: int):
     factors = []
     factors.append(gate)
     for i in range(n_qubits - k_adj_targets):
@@ -129,7 +129,7 @@ def permute_state(state, new_order):
 
     return state_new
 
-def invert_order(new_order):
+def invert_order(new_order: np.array):
     n = len(new_order)
     inv = [0] * n
     for new_pos, old_pos in enumerate(new_order):
@@ -137,7 +137,7 @@ def invert_order(new_order):
     return inv
 
 
-def apply_gate_multi_qubit(gate, state, targets):
+def apply_gate_multi_qubit(gate: np.array, state: np.array, targets: np.array):
     n_qubits = int(np.log2(state.size))
     k = int(np.log2(gate.shape[0]))
     
@@ -149,8 +149,4 @@ def apply_gate_multi_qubit(gate, state, targets):
     old_order = invert_order(new_order)
     
     return permute_state(gate_applied, old_order)
-    
-state = np.array([1, 2, 3, 4, 5, 6, 7, 8])
-targets = [2, 0]
-print(apply_gate_multi_qubit(CX, state, targets))
         
