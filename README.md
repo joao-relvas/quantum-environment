@@ -1,278 +1,261 @@
+Here is a GitHub-ready README in a single Markdown text box.
+All math has been rewritten in plain text so it renders correctly on GitHub (no LaTeX).
 
 ⸻
 
-Quantum Environment
 
-A Neural Quantum Compilation and Research Environment
+# Quantum Platform  
+### Neural–Symbolic Quantum Compilation & Research Environment
 
-A full-stack quantum computing research platform for compiler design, learned intermediate representations, neural optimization, and quantum algorithm discovery.
+A full-stack experimental platform for quantum compiler research, learned intermediate representations (LIR), neural-guided optimization, and quantum algorithm discovery.
 
-⸻
+This project implements and extends the ideas proposed in:
 
-Overview
-
-This repository contains the development of a modular quantum computing platform designed to support:
-	•	Quantum compiler research
-	•	Learned Intermediate Representations (LIR)
-	•	Neural-guided circuit optimization
-	•	Quantum simulation
-	•	Quantum machine learning experimentation
-	•	Hardware-aware optimization research
-	•	Autonomous circuit and algorithm discovery
-
-The platform is not merely a simulator or compiler it is a controlled experimental environment for studying how machine learning can fundamentally alter quantum compilation and circuit optimization.
-
-This project directly implements and extends the ideas proposed in:
-
-“Learned Intermediate Representations in Quantum Compilers”
-João V. Pansani Relvas
+“Learned Intermediate Representations in Quantum Compilers”  
+João V. Pansani Relvas  
 Instituto Superior Técnico
 
-The preprint introduces a continuous latent representation of quantum circuits that enables global structural reasoning beyond rule-based gate rewriting.
+The repository serves as the practical research infrastructure for developing and validating a continuous latent representation for quantum circuits integrated into a symbolic compiler pipeline.
 
-This repository serves as the practical research infrastructure for that work.
+---
 
-⸻
+# Vision
 
-Architecture Overview
+Modern quantum compilers rely heavily on symbolic, rule-based rewriting over gate-level intermediate representations (IRs). While effective, these approaches are inherently local and limited by handcrafted heuristics.
 
-The platform is structured as a layered neural–symbolic system:
+This platform explores a different paradigm:
+
+Hybrid neural–symbolic quantum compilation
+
+Instead of optimizing circuits purely through deterministic rewrite rules, we introduce a learned continuous latent representation that guides optimization decisions while preserving strict symbolic validity guarantees.
+
+---
+
+# System Architecture
 
 Quantum Language
-        ↓
+    ↓
 Front-End Parser
-        ↓
+    ↓
 Graph-Based Intermediate Representation (IR)
-        ↓
------------------------------------------------
-|  Baseline Symbolic Optimization Pipeline   |
-|  Neural-Guided LIR Optimization Pipeline   |
------------------------------------------------
-        ↓
+    ↓
+-------------------------------------------------
+|  Baseline Symbolic Optimization Pipeline      |
+|  Neural-Guided LIR Optimization Pipeline      |
+-------------------------------------------------
+    ↓
 Hardware Mapping Layer
-        ↓
+    ↓
 Circuit-Level Quantum Simulator
 
-The system allows direct comparison between:
-	•	Pure rule-based compilation
-	•	Neural-guided latent-space optimization
+The system supports direct comparison between:
+
+1) Pure symbolic rule-based compilation  
+2) Neural-guided latent-space optimization  
 
 under identical execution and validation conditions.
 
-⸻
+---
 
-Core Components
+# Core Components
 
-1. Quantum Compiler
+## 1. Quantum Compiler
 
-A full compiler stack that includes:
-	•	High-level quantum language
-	•	Graph-based Intermediate Representation (IR)
-	•	Gate-level IR
-	•	Hardware-level IR
-	•	Optimization IR
-	•	Multi-stage transformation passes
+A modular compiler stack including:
 
-The compiler supports two modes:
-	•	Symbolic Mode - deterministic rule-based rewriting
-	•	Neural Mode - LIR-guided optimization over the same symbolic backbone
+- High-level quantum language
+- Graph-based structural IR
+- Gate-level IR
+- Hardware-level IR
+- Optimization IR
+- Continuous Latent IR (Learned IR)
 
-This ensures structural correctness while enabling data-driven transformation ranking.
+Two compilation modes:
 
-⸻
+Symbolic Mode:
+- Deterministic rule-based rewriting
+- Gate cancellation
+- Commutation analysis
+- Hardware-aware mapping
 
-2. Learned Intermediate Representation (LIR)
+Neural Mode:
+- Learned ranking of candidate transformations
+- Latent structural embeddings guide optimization
+- Symbolic layer guarantees structural validity
 
-This is the central research contribution.
+---
 
-Instead of representing circuits purely as symbolic DAGs, the compiler includes:
+## 2. Learned Intermediate Representation (LIR)
 
-\phi : C \rightarrow \mathbb{R}^d
+We define an encoder:
+
+phi(C) -> R^d
 
 Where:
-	•	C is a quantum circuit graph
-	•	\phi(C) is a continuous latent embedding
+- C = quantum circuit represented as a DAG
+- phi(C) = d-dimensional continuous embedding
 
-In this latent space:
-	•	Structural similarity becomes geometric proximity
-	•	Optimization can be framed as learned transformation ranking
-	•	Non-local equivalences can be detected
-	•	Hardware constraints can be embedded directly into representations
+This embedding captures:
+
+- Gate composition and frequency
+- Dependency structure
+- Circuit depth characteristics
+- Parameterized gate information
+- Optional hardware topology information
 
 Optimization becomes:
 
-R(C) \xrightarrow{O} R(C')
+R(C) --O--> R(C')
 
-where O is a learnable operator guiding transformation selection.
+Where:
+- O is a learnable operator
+- Symbolic validation reconstructs C'
 
 The symbolic layer enforces:
-	•	Acyclicity
-	•	Gate-set compliance
-	•	Parameter validity
-	•	Qubit consistency
 
-Thus maintaining physical correctness.
+- Acyclicity
+- Gate-set compliance
+- Parameter consistency
+- Qubit index validity
 
-⸻
+The neural component guides decisions.  
+The symbolic component guarantees correctness.
 
-3. Neural Optimization Modules
+---
 
-The platform integrates multiple neural subsystems:
+## 3. Neural Optimization Modules
 
-a) Compiler Optimization Network
-	•	Predicts structural cost impact of candidate rewrites
-	•	Prioritizes transformations expected to reduce:
-	•	Two-qubit gate count
-	•	Circuit depth
-	•	Hardware routing cost
+### Compiler Optimization Network
+- Predicts cost impact of candidate rewrites
+- Prioritizes transformations reducing:
+  - Two-qubit gate count
+  - Circuit depth
+  - Routing overhead
 
-b) Hardware Optimization Network
-	•	Learns gate selection and decomposition strategies
-	•	Adapts to hardware topology constraints
-	•	May condition on noise models
+### Hardware Optimization Network
+- Learns hardware-aware gate decompositions
+- Adapts to connectivity constraints
 
-c) Qubit Control & Error Correction Network
-	•	Designed to explore learned strategies for:
-	•	Noise-aware compilation
-	•	Error mitigation
-	•	Adaptive routing under hardware constraints
+### Qubit Control & Error-Correction Module
+- Experimental exploration of noise-aware compilation
+- Adaptive routing under hardware constraints
 
-d) Neural Circuit Discovery Module
-	•	Latent-space exploration for:
-	•	Novel circuit variants
-	•	Alternative decompositions
-	•	Structure-preserving algorithm mutations
+### Neural Circuit Discovery Module
+- Latent-space exploration
+- Alternative decompositions
+- Structural algorithm mutations
 
-⸻
+---
 
-4. Quantum Simulator
+## 4. Quantum Simulator
 
-Since no physical quantum hardware is available, the platform includes a circuit-level simulator supporting:
-	•	Statevector evolution
-	•	Fidelity computation
-	•	Structural metric evaluation
-	•	Noise modeling (extensible)
+Since physical hardware is not available, the platform includes a circuit-level simulator supporting:
+
+- Statevector evolution
+- Fidelity computation
+- Structural metric evaluation
+- Noise modeling (extensible)
 
 Functional equivalence is verified via:
 
-F = |\langle \psi_{baseline} | \psi_{neural} \rangle|^2
+F = | <psi_baseline | psi_neural> |^2
 
-Currently supports up to ~8 qubits under full statevector simulation.
+Current limit:
+- Approximately 8 qubits (full statevector simulation)
 
 Future extensions:
-	•	Tensor-network simulation
-	•	Approximate simulation
-	•	External hardware execution
+- Tensor-network simulation
+- Approximate simulation
+- External hardware execution
 
-⸻
+---
 
-5. Quantum Machine Learning Engine
+## 5. Quantum Machine Learning Engine
 
-The platform includes infrastructure for:
-	•	Graph neural networks over circuit DAGs
-	•	Latent embedding training
-	•	Supervised cost prediction
-	•	Reinforcement learning over compilation trajectories
-	•	Hardware-conditioned embeddings
+Infrastructure for:
 
-This allows treating compilation as:
+- Graph neural networks over circuit DAGs
+- Supervised cost prediction
+- Reinforcement learning over compilation trajectories
+- Hardware-conditioned embeddings
 
-C_{t+1} = T(C_t, a_t)
+Compilation can be modeled as:
 
-with policies:
+C_(t+1) = T(C_t, a_t)
 
-\pi(a_t | z_t)
+Policy:
 
-where z_t = \phi(C_t).
+pi(a_t | z_t)
 
-⸻
+Where:
+- z_t = phi(C_t)
 
-6. Multi-Level Intermediate Representations
+This enables sequential decision-based compilation.
 
-The platform supports layered IRs:
-	•	High-level semantic IR
-	•	Graph-based structural IR
-	•	Gate-level IR
-	•	Hardware-mapped IR
-	•	Optimization IR
-	•	Latent IR (continuous)
+---
 
-Unlike frameworks such as:
-	•	Qiskit
-	•	Cirq
-	•	t|ket⟩
+# Research Objectives
 
-this system explicitly integrates a continuous learned layer into the compilation stack rather than relying exclusively on rule-based rewriting.
+1. Structural Compression  
+   Can learned embeddings reduce two-qubit gate count beyond handcrafted rules?
 
-⸻
+2. Global Circuit Equivalence Detection  
+   Can latent space capture non-local structural redundancies?
 
-Research Goals
+3. Hardware-Aware Embedding  
+   Can topology and noise constraints be internalized?
 
-This platform is built to experimentally investigate:
+4. Neural-Guided Routing  
+   Can learned ranking improve qubit mapping?
 
-1. Structural Compression
+5. Reinforcement-Based Compilation  
+   Can compilation be treated as a policy-learning problem?
 
-Can learned representations reduce two-qubit gate counts beyond heuristic rewriting?
+6. Autonomous Algorithm Discovery  
+   Can latent exploration yield novel circuit structures?
 
-2. Global Circuit Equivalence Detection
+---
 
-Can latent embeddings identify non-local structural redundancies?
+# Evaluation Metrics
 
-3. Hardware-Aware Latent Conditioning
+Primary objective:
 
-Can embeddings internalize topology and noise constraints?
+J(C) = alpha * N_2q(C)
 
-4. Neural-Guided Routing
+Where:
+- N_2q(C) = number of two-qubit gates
 
-Can qubit mapping be improved via learned ranking of routing strategies?
+Future objective:
 
-5. Reinforcement-Based Compilation
+J(C) = alpha * N_2q(C)  
+      + beta * Depth(C)  
+      + gamma * TotalGateCount(C)
 
-Can compilation be framed as a sequential decision process with learned policies?
+Benchmarks:
 
-6. Autonomous Algorithm Discovery
+- Grover circuits
+- QFT circuits
+- Random circuits
 
-Can latent space exploration yield new algorithmic patterns?
+All neural results are compared directly to the symbolic baseline.
 
-⸻
+---
 
-Evaluation Metrics
+# Current Limitations
 
-Current objective function:
+- Statevector simulation scalability
+- Small-qubit regime
+- Early-stage neural training
+- No access to real calibration data
+- No formal optimality guarantees
 
-J(C) = \alpha N_{2q}(C)
+The neural component is a heuristic approximator, not an exact optimizer.
 
-Primary metric:
-	•	Two-qubit gate count
+---
 
-Future metrics:
-	•	Depth
-	•	Total gate count
-	•	Noise-weighted cost
-	•	Routing overhead
-	•	Compilation time
+# Long-Term Vision
 
-Benchmark circuits include:
-	•	Grover
-	•	QFT
-	•	Random circuits
-
-All neural results are compared against baseline symbolic optimization under identical conditions.
-
-⸻
-
-Current Limitations
-	•	Statevector simulation scaling
-	•	Limited qubit count
-	•	Early-stage neural training
-	•	No access to real hardware calibration data
-	•	No formal optimality guarantees (heuristic model)
-
-⸻
-
-Long-Term Vision
-
-This project aims to move quantum compilation from:
+Move quantum compilation from:
 
 Static symbolic rewriting
 
@@ -280,19 +263,23 @@ to
 
 Hybrid neural–symbolic continuous optimization
 
-Ultimately enabling:
-	•	Noise-adaptive compilers
-	•	Hardware-calibration-aware embeddings
-	•	Pulse-level integration
-	•	Latent-guided algorithm synthesis
-	•	Self-improving compilation systems
+Enabling:
 
-⸻
+- Noise-adaptive compilation
+- Hardware-calibration-aware embeddings
+- Pulse-level integration
+- Latent-guided algorithm synthesis
+- Self-improving compilation systems
 
-Project Status
+---
+
+# Status
 
 Active research & development.
 
-This repository is under continuous architectural evolution as experiments from the LIR preprint are implemented, validated, and extended.
+The architecture will evolve as experiments from the LIR framework are implemented and validated.
 
-⸻
+This repository is both:
+
+- A compiler engineering project  
+- A research laboratory for neural-guided quantum compilation  
