@@ -20,7 +20,7 @@ This repository contains the development of a modular quantum computing platform
 	•	Hardware-aware optimization research
 	•	Autonomous circuit and algorithm discovery
 
-The platform is not merely a simulator or compiler — it is a controlled experimental environment for studying how machine learning can fundamentally alter quantum compilation and circuit optimization.
+The platform is not merely a simulator or compiler it is a controlled experimental environment for studying how machine learning can fundamentally alter quantum compilation and circuit optimization.
 
 This project directly implements and extends the ideas proposed in:
 
@@ -74,8 +74,8 @@ A full compiler stack that includes:
 	•	Multi-stage transformation passes
 
 The compiler supports two modes:
-	•	Symbolic Mode — deterministic rule-based rewriting
-	•	Neural Mode — LIR-guided optimization over the same symbolic backbone
+	•	Symbolic Mode - deterministic rule-based rewriting
+	•	Neural Mode - LIR-guided optimization over the same symbolic backbone
 
 This ensures structural correctness while enabling data-driven transformation ranking.
 
